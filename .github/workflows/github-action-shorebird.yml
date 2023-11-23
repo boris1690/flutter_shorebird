@@ -1,15 +1,19 @@
-name: Patch an APK using Shorebird
+name: Shorebird Patch
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+
+env:
+  SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
 
 jobs:
-  patch-apk:
+  patch:
     defaults:
       run:
         shell: bash
+
     runs-on: ubuntu-latest
+
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v3
@@ -17,7 +21,7 @@ jobs:
       - name: 🐦 Setup Shorebird
         uses: shorebirdtech/setup-shorebird@v0
 
-      - name: 🚀 Shorebird Patch Update
-        run: shorebird patch android --force
-        env:
-          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+      # Note: all signing information (key.properties, etc.) must be set up on
+      # this runner for `shorebird patch android` to work.
+      - name: 🚀 Shorebird Patch
+        run: shorebird patch android
